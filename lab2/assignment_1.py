@@ -1,12 +1,55 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+from math import cos, sin
+
 class Vehicle:
     def __init__(self, x=0, y=0, theta=0, length=1, width=0.5):
-        fig = plot.figure()
+        self.p1 = np.array([length/2, 0, 1]).T         # tip of triangle
+        self.p2 = np.array([-length/2, width/2, 1]).T  # top base of triangle
+        self.p3 = np.array([-length/2, -width/2, 1]).T # bottom base of triangle
+
+        plt.ion()
+
+        self.goal = [x, y]
+
+        fig = plt.figure()
         fig.canvas.mpl_connect('button_press_event', self.click)
 
-    def update_pose():
+        self.update_pose(x, y, theta)
 
-    def transformation_matrix():
+    def update_pose(self, x=0, y=0, theta=0):
+        self.x = x
+        self.y = y
+        self.theta = theta
 
-    def plot():
+        self.plot()
 
-    def click():
+    def transformation_matrix(self):
+        return np.array(
+            [[cos(self.theta), -sin(self.theta), self.x],
+             [sin(self.theta), cos(self.theta), self.y]]
+             )
+
+    def plot(self):
+        T = self.transformation_matrix()
+
+        p1_r = np.matmul(T, self.p1)
+        p2_r = np.matmul(T, self.p2)
+        p3_r = np.matmul(T, self.p3)
+
+        plt.cla()
+        plt.plot([p1_r[0], p2_r[0]], [p1_r[1], p2_r[1]], 'k-')
+        plt.plot([p2_r[0], p3_r[0]], [p2_r[1], p3_r[1]], 'k-')
+        plt.plot([p3_r[0], p1_r[0]], [p3_r[1], p1_r[1]], 'k-')
+
+        plt.plot(self.goal[0], self.goal[1], c='g', marker='*')
+
+        plt.xlim(-10, 10)
+        plt.ylim(-10, 10)
+
+        plt.show()
+        plt.pause(0.001)
+
+    def click(self, event):
+        self.goal = [event.xdata, event.ydata]

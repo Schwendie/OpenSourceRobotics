@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from math import cos, sin, pi
 
-plt.ioff()
+plt.ion()
 
 x0 = 0
 y0 = 0
@@ -17,6 +17,13 @@ y_traj = []
 theta = 0
 x = 0
 y = 0
+vx = 0
+vy = 0
+omg = 0
+v = 0
+vs = []
+omega = []
+thetas = []
 
 if __name__ == "__main__":
 
@@ -33,18 +40,26 @@ if __name__ == "__main__":
 for vel in velocities:
     omg = vel[1] - vel[0]
     v = (vel[1] + vel[0]) / 2
-    theta = theta + omg*dt
-    vx = v*cos(theta)
-    vy = v*sin(theta)
-    x = x + vx*dt
-    y = y + vx*dt
+    omega.append(omg)
+    vs.append(v)
+
+for item in omega:
+    theta += item*dt
+    thetas.append(theta)
+
+for i in range(0, 2050):
+    vx = vs[i]*cos(thetas[i])
+    vy = vs[i]*sin(thetas[i])
+    x += vx*dt
+    y += vx*dt
     
     x_traj.append(x)
     y_traj.append(y)
-	
-plt.ion()
+
+
+print(x, y)
             
-for i in range(len(x_traj) - 1):
+for i in range(len(omega) - 1):
     plt.cla()
     plt.plot(x_traj[:i], y_traj[:i], 'r--')
     plt.arrow(x_traj[i], y_traj[i], x_traj[i+1]-x_traj[i], y_traj[i+1]-y_traj[i], width=0.05, color='k')

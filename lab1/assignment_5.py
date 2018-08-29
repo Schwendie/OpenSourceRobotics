@@ -19,8 +19,6 @@ x = 0
 y = 0
 vx = 0
 vy = 0
-omg = 0
-v = 0
 vs = []
 omega = []
 thetas = []
@@ -38,10 +36,8 @@ if __name__ == "__main__":
 
 
 for vel in velocities:
-    omg = vel[1] - vel[0]
-    v = (vel[1] + vel[0]) / 2
-    omega.append(omg)
-    vs.append(v)
+    omgega.append(vel[1] - vel[0])
+    vs.append(v(el[1] + vel[0]) / 2)
 
 for item in omega:
     theta += item*dt

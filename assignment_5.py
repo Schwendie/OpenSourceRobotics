@@ -1,4 +1,4 @@
-import sys
+"""import sys
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -63,5 +63,59 @@ for i in range(len(omega) - 1):
     plt.cla()
     plt.plot(x_traj[:i], y_traj[:i], 'r--')
     plt.arrow(x_traj[i], y_traj[i], x_traj[i+1]-x_traj[i], y_traj[i+1]-y_traj[i], width=0.05, color='k')
+    plt.show()
+    plt.pause(dt)"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+from math import pi, cos, sin, ceil
+
+velocities = []
+v_mag = []
+omega = []
+points = []
+x_data = []
+y_data = []
+theta_list = []
+theta = 0
+xPos = 0
+yPos = 0
+v_x = 0
+v_y = 0
+dt = 0.01
+
+plt.ion()
+
+with open("wheel_velocities.txt", "r") as file:
+    for line in file:
+        data = line.rstrip().split(' ')
+        data[1] = float(data[1])
+        data[0] = float(data[0])
+        velocities.append(data)
+        
+for point in velocities:
+    omega.append(point[1] - point[0])
+    v_mag.append((point[0] + point[1])/2)
+    
+for point in omega:
+    theta += point*dt
+    theta_list.append(theta)
+    
+for i in range(0, 2050):
+    v_x = v_mag[i]*cos(theta_list[i])
+    v_y = v_mag[i]*sin(theta_list[i])
+    xPos += v_x*dt
+    yPos += v_y*dt
+    x_data.append(xPos)
+    y_data.append(yPos)
+    
+print(xPos, yPos)
+
+for i in range(len(omega)-1):
+    plt.cla()
+    plt.plot(x_data[:i], y_data[:i], 'r--')
+    
+    plt.arrow(x_data[i], y_data[i], x_data[i+1]-x_data[i], y_data[i+1]-y_data[i], width=0.05, color='k')
     plt.show()
     plt.pause(dt)

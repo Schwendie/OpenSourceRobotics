@@ -62,7 +62,7 @@ class Vehicle:
             circle = plt.Circle((obs[0], obs[1]), radius=0.5*obs[2], fc='r')
             plt.gca().add_patch(circle)
 
-        plt.xlim(-10, 10)
+        plt.xlim(-1, 21)
         plt.ylim(-10, 10)
 
         plt.show()

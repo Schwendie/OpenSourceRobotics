@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from math import cos, sin
+from math import cos, sin, sqrt, pi, atan2
 
 class Vehicle:
 
@@ -70,3 +70,26 @@ class Vehicle:
 
     def click(self, event):
         self.goal = [event.xdata, event.ydata]
+
+    def place_goal(self, x_goal, y_goal):
+        self.goal = [x_goal, y_goal]
+
+    def ang_diff(self, theta1, theta2):
+        return (theta1 - theta2 + pi)%(2*pi) - pi
+
+    def pure_pursuit(self, x_goal, y_goal):
+        zeros = lambda n: [0 for _ in range(n)]
+        x, y, dx, dy, d, v, vx, vy, theta, theta_goal, omg = zeros(11)
+        K_p, K_h, dt = 10, 30, 0.01
+        while True:
+            dx = x_goal - x
+            dy = y_goal - y
+            d = sqrt(dx**2 + dy**2)
+            v = K_p * d
+            theta_goal = atan2(dy, dx)
+            vx = v * cos(theta)
+            vy = v * sin(theta)
+            x = x + vx*dt
+            y = y + vy*dt
+            omg = K_h * ang_diff(theta_goal, theta)
+            theta = theta + omg*dt

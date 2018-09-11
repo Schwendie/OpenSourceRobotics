@@ -26,6 +26,8 @@ class Vehicle:
         self.y = y
         self.theta = theta
 
+        self.plot()
+
     def transformation_matrix(self):
         return np.array(
             [[cos(self.theta), -sin(self.theta), self.x],
@@ -81,7 +83,7 @@ class Vehicle:
         zeros = lambda n: [0 for _ in range(n)]
         x, y, dx, dy, d, v, vx, vy, theta, theta_goal, omg = zeros(11)
         K_p, K_h, dt = 10, 30, 0.01
-        while True:
+        while (x != x_goal) or (y != y_goal):
             dx = x_goal - x
             dy = y_goal - y
             d = sqrt(dx**2 + dy**2)
@@ -91,5 +93,7 @@ class Vehicle:
             vy = v * sin(theta)
             x = x + vx*dt
             y = y + vy*dt
-            omg = K_h * ang_diff(theta_goal, theta)
+            omg = K_h * self.ang_diff(theta_goal, theta)
             theta = theta + omg*dt
+
+            self.update_pose(x, y, theta)

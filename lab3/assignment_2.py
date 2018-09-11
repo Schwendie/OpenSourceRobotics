@@ -3,10 +3,14 @@ import sys
 from my_robots import Vehicle
 
 v = Vehicle()
-v.add_obstacles([10,0,5])
-print(v.obstacles)
-while True:
-    v.plot()
+#v.add_obstacles([10,0,5])
+#print(v.obstacles)
+x_goal, y_goal = 20, 0
+v.place_goal(x_goal, y_goal)
+print(v.goal)
+v.pure_pursuit(x_goal, y_goal)
+
+"""
 
 if __name__ == "__main__":
     try:
@@ -14,4 +18,4 @@ if __name__ == "__main__":
         y_wp = float(sys.argv[2])
     except:
         print("Please enter a numerical value for the waypoints")
-
+"""

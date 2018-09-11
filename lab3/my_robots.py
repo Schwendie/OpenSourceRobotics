@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from math import cos, sin, sqrt, pi, atan2
+from math import cos, sin, sqrt, pi, atan2, isclose
 
 class Vehicle:
 
@@ -81,9 +81,10 @@ class Vehicle:
 
     def pure_pursuit(self, x_goal, y_goal):
         zeros = lambda n: [0 for _ in range(n)]
-        x, y, dx, dy, d, v, vx, vy, theta, theta_goal, omg = zeros(11)
+        dx, dy, d, v, vx, vy, theta_goal, omg = zeros(8)
+        x, y, theta = self.x, self.y, self.theta
         K_p, K_h, dt = 10, 30, 0.01
-        while (x != x_goal) or (y != y_goal):
+        while not (isclose(x, x_goal, rel_tol=1e-5)) or not (isclose(y, y_goal, rel_tol=1e-5)):
             dx = x_goal - x
             dy = y_goal - y
             d = sqrt(dx**2 + dy**2)

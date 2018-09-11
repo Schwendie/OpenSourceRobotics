@@ -14,8 +14,8 @@ v_y = 0
 theta = 0
 theta_goal = 0
 omg = 0
-K_p = 3
-K_h = 5
+K_p = 10
+K_h = 30
 dt = 0.01
 ve = Vehicle()
 

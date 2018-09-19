@@ -2,66 +2,57 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 
-from math import cos, sin, pi, sqrt, atan2
+from math import cos, sin, pi, sqrt, atan2, isclose
 from my_robots import Vehicle
 from assignment_3 import TrajectoryGenerator
 
-def ang_diff(theta_goal, theta):
-    return (theta_goal - theta + pi)%(2*pi) - pi
-
 def pureP(xWp, yWp):
-
-    dt = 0.01
-    k1 = 10
-    k2 =30
-    x = 0
-    y = 0
-    theta = 0
-    xGoal = 0
-    yGoal = 0
+    zeros = lambda n: [0 for _ in range(n)]
+    x, y, theta, x_goal, y_goal, T = zeros(6)
+    K_p, K_h, dt = 10, 30, 0.01
     check = True
     i = 0
     traj.update_states(p_i=[0,0,0], p_f=[xWp, yWp, 0])
     xCo, yCo, zCo = traj.solve()
-    time = 0
     q = 0
     dWp = 0
     d = 0
 
     #loops until vehicle reaches goal
-    while d > 0.1 or check:
+    #while d > 0.1 or check:
+    while not (isclose(x, x_goal, rel_tol=1e-5)) or not (isclose(y, y_goal, rel_tol=1e-5)) or check:
 
         #point stops moving when it reaches endpoint
         if dWp > 0.1:
-            xGoal = xCo[0] * time**5 + xCo[1] * time**4 + xCo[2] * time**3 + xCo[3] * time**2 + xCo[4] * time + xCo[5]
-            yGoal = yCo[0] * time**5 + yCo[1] * time**4 + yCo[2] * time**3 + yCo[3] * time**2 + xCo[4] * time + yCo[5]
-            goal = [xGoal, yGoal]
-            time += 0.01
+            x_goal = xCo[0] * T**5 + xCo[1] * T**4 + xCo[2] * T**3 + xCo[3] * T**2 + xCo[4] * T + xCo[5]
+            y_goal = yCo[0] * T**5 + yCo[1] * T**4 + yCo[2] * T**3 + yCo[3] * T**2 + xCo[4] * T + yCo[5]
+            goal = [x_goal, y_goal]
+            T += 0.01
 
         #math for pure pursuit
-        delX = xGoal - x
-        delY = yGoal - y
-        delXwp = xWp - xGoal
-        delYwp = yWp - yGoal
+        dx = x_goal - x
+        dy = y_goal - y
+        delXwp = xWp - x_goal
+        delYwp = yWp - y_goal
         dWp = sqrt(delXwp**2 + delYwp**2)
 
 
-        d = sqrt(delX**2 + delY**2)
+        d = sqrt(dx**2 + dy**2)
         
 
-        thetaGoal = atan2(delY, delX)
-        omega = k2 * ang_diff(thetaGoal, theta)
+        theta_goal = atan2(dy, dx)
+        omega = K_h * v.ang_diff(theta_goal, theta)
         
-        vMag = k1 * d
-        vX = vMag * cos(theta)
-        vY = vMag * sin(theta)
+        vMag = K_p * d
+        vx = vMag * cos(theta)
+        vy = vMag * sin(theta)
 
-        x = x + vX * dt
-        y = y + vY * dt
+        x = x + vx*dt
+        y = y + vy*dt
         theta += omega * dt
 
         v.update_pose(x, y, theta)
-        v.place_goal(xGoal, yGoal)
+        v.place_goal(x_goal, y_goal)
         v.plot()
 
         #updates wp of point
@@ -70,7 +61,7 @@ def pureP(xWp, yWp):
             traj.update_states(p_i=[xWp, yWp, 0], p_f=[10, 0, 0])
             xCo, yCo, zCo = traj.solve()
             q = 1
-            time = 0
+            T = 0
             xWp = 10
             yWp = 0
             dWp = sqrt(delXwp**2 + delYwp**2)

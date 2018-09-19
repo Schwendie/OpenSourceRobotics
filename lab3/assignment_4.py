@@ -12,8 +12,8 @@ def pureP(xWp, yWp):
     K_p, K_h, dt = 10, 30, 0.01
     check = True
     i = 0
-    traj.update_states(p_i=[0,0,0], p_f=[xWp, yWp, 0])
-    xCo, yCo, zCo = traj.solve()
+    traj.update_states(p_i=[0,0,0], p_f=[xWp, yWp, 0], v_i=[0,0,0], v_f=[-1,0,0])
+    xCo, yCo, zCo = traj.solve(time=10)
     q = 0
     dWp = 0
     d = 0
@@ -25,9 +25,9 @@ def pureP(xWp, yWp):
         #point stops moving when it reaches endpoint
         if dWp > 0.1:
             x_goal = xCo[0] * T**5 + xCo[1] * T**4 + xCo[2] * T**3 + xCo[3] * T**2 + xCo[4] * T + xCo[5]
-            y_goal = yCo[0] * T**5 + yCo[1] * T**4 + yCo[2] * T**3 + yCo[3] * T**2 + xCo[4] * T + yCo[5]
+            y_goal = yCo[0] * T**5 + yCo[1] * T**4 + yCo[2] * T**3 + yCo[3] * T**2 + yCo[4] * T + yCo[5]
             goal = [x_goal, y_goal]
-            T += 0.01
+            T += 0.1
 
         #math for pure pursuit
         dx = x_goal - x
@@ -50,16 +50,16 @@ def pureP(xWp, yWp):
         x = x + vx*dt
         y = y + vy*dt
         theta += omega * dt
-
-        v.update_pose(x, y, theta)
         v.place_goal(x_goal, y_goal)
-        v.plot()
+        v.update_pose(x, y, theta)
+        
+        #v.plot()
 
         #updates wp of point
         if dWp < 0.1 and q == 0:
 
-            traj.update_states(p_i=[xWp, yWp, 0], p_f=[10, 0, 0])
-            xCo, yCo, zCo = traj.solve()
+            traj.update_states(p_i=[xWp, yWp, 0], p_f=[10, 0, 0], v_i=[-1,0,0], v_f=[-1,0,0])
+            xCo, yCo, zCo = traj.solve(time=10)
             q = 1
             T = 0
             xWp = 10

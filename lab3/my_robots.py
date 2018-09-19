@@ -26,7 +26,7 @@ class Vehicle:
         self.y = y
         self.theta = theta
 
-        self.plot()
+        self.plot(self.goal, (-1,21), (-10,10))
 
     def transformation_matrix(self):
         return np.array(
@@ -46,7 +46,7 @@ class Vehicle:
             print("No obstacle matching that description found.  Please remove one of these instead:")
             print(self.obstacles)
 
-    def plot(self):
+    def plot(self, goal=[], x_lim=(-10,10), y_lim=(-10,10)):
         T = self.transformation_matrix()
 
         p1_r = np.matmul(T, self.p1)
@@ -64,8 +64,8 @@ class Vehicle:
             circle = plt.Circle((obs[0], obs[1]), radius=0.5*obs[2], fc='r')
             plt.gca().add_patch(circle)
 
-        plt.xlim(-1, 21)
-        plt.ylim(-10, 10)
+        plt.xlim(x_lim)
+        plt.ylim(y_lim)
 
         plt.show()
         plt.pause(0.001)
@@ -79,12 +79,14 @@ class Vehicle:
     def ang_diff(self, theta1, theta2):
         return (theta1 - theta2 + pi)%(2*pi) - pi
 
+    """
     def pure_pursuit(self, x_goal, y_goal):
         zeros = lambda n: [0 for _ in range(n)]
         dx, dy, d, v, vx, vy, theta_goal, omg = zeros(8)
         x, y, theta = self.x, self.y, self.theta
         K_p, K_h, dt = 10, 30, 0.01
-        while not (isclose(x, x_goal, rel_tol=1e-5)) or not (isclose(y, y_goal, rel_tol=1e-5)):
+        #while not (isclose(x, x_goal, rel_tol=1e-2)) or not (isclose(y, y_goal, rel_tol=1e-2)):
+        while x < x_goal-0.5:
             dx = x_goal - x
             dy = y_goal - y
             d = sqrt(dx**2 + dy**2)
@@ -98,3 +100,4 @@ class Vehicle:
             theta = theta + omg*dt
 
             self.update_pose(x, y, theta)
+            """

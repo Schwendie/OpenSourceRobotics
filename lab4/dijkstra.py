@@ -8,6 +8,7 @@ obstacle_prob = 0.2
 m, n = 25, 25
 start_node = (0, 0)
 goal_node = (m-1, n-1)
+distance = 0
 
 colors = ['white', 'black', 'red', 'blue', 'green', 'yellow', 'gray']
 levels = [0, 1, 2, 3, 4, 5, 6, 7]
@@ -22,6 +23,8 @@ parent_map = [[() for _ in range(n)] for _ in range(m)]
 distance_map = np.full((m, n), np.inf)
 distance_map[start_node] = 0
 
+unvisited = []
+
 while True:
     grid[start_node] = 5
     grid[goal_node] = 4
@@ -32,9 +35,12 @@ while True:
         break
 
     ###Your code goes here###
-    left_node = (current_node[0]-1, current_node[1])
+    distance += 1
 
+    left_node = (current_node[0]-1, current_node[1])
     grid[left_node] = 3
+    distance_map[left_node] = distance
+    parent_map[left_node] = current_node
 
 
 

@@ -42,28 +42,28 @@ while True:
         if (grid[up_node] == 0) or (grid[up_node] == 4):
             grid[up_node] = 3
             distance_map[up_node] = distance
-            parent_map[up_node] = current_node
+            parent_map[up_node[0]][up_node[1]] = current_node
             
     if (current_node[1] - 1 >= 0):
         left_node = (current_node[0], current_node[1]-1)
         if (grid[left_node] == 0) or (grid[left_node] == 4):
             grid[left_node] = 3
             distance_map[left_node] = distance
-            parent_map[left_node] = current_node
+            parent_map[left_node[0]][left_node[1]] = current_node
             
     if (current_node[1] + 1 < n):
         right_node = (current_node[0], current_node[1]+1)
         if (grid[right_node] == 0) or (grid[right_node] == 4):
             grid[right_node] = 3
             distance_map[right_node] = distance
-            parent_map[right_node] = current_node
+            parent_map[right_node[0]][right_node[1]] = current_node
     
     if (current_node[0] + 1 < m):
         down_node = (current_node[0]+1, current_node[1])
         if (grid[down_node] == 0) or (grid[down_node] == 4):
             grid[down_node] = 3
             distance_map[down_node] = distance
-            parent_map[down_node] = current_node
+            parent_map[down_node[0]][down_node[1]] = current_node
             
     if (grid[current_node] == 3):
         grid[current_node] = 2

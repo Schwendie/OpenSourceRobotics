@@ -23,7 +23,7 @@ parent_map = [[() for _ in range(n)] for _ in range(m)]
 distance_map = np.full((m, n), np.inf)
 distance_map[start_node] = 0
 
-unvisited = []
+distance = 0
 
 while True:
     grid[start_node] = 5
@@ -36,11 +36,39 @@ while True:
 
     ###Your code goes here###
     distance += 1
-
-    left_node = (current_node[0]-1, current_node[1])
-    grid[left_node] = 3
-    distance_map[left_node] = distance
-    parent_map[left_node] = current_node
+    
+    if (current_node[0] - 1 >= 0):
+        up_node = (current_node[0]-1, current_node[1])
+        if (grid[up_node] == 0) or (grid[up_node] == 4):
+            grid[up_node] = 3
+            distance_map[up_node] = distance
+            parent_map[up_node] = current_node
+            
+    if (current_node[1] - 1 >= 0):
+        left_node = (current_node[0], current_node[1]-1)
+        if (grid[left_node] == 0) or (grid[left_node] == 4):
+            grid[left_node] = 3
+            distance_map[left_node] = distance
+            parent_map[left_node] = current_node
+            
+    if (current_node[1] + 1 < n):
+        right_node = (current_node[0], current_node[1]+1)
+        if (grid[right_node] == 0) or (grid[right_node] == 4):
+            grid[right_node] = 3
+            distance_map[right_node] = distance
+            parent_map[right_node] = current_node
+    
+    if (current_node[0] + 1 < m):
+        down_node = (current_node[0]+1, current_node[1])
+        if (grid[down_node] == 0) or (grid[down_node] == 4):
+            grid[down_node] = 3
+            distance_map[down_node] = distance
+            parent_map[down_node] = current_node
+            
+    if (grid[current_node] == 3):
+        grid[current_node] = 2
+    
+    distance_map[current_node] = np.inf
 
 
 

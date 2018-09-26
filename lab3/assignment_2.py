@@ -47,6 +47,7 @@ def pureP(x_wp, y_wp):
         theta = theta + omg*dt
 
         ve.update_pose(x, y, theta)
+        ve.plot(goal=[x_goal,y_goal], x_lim=[-1,21], y_lim=[-10,10])
 
         if d_wp < 0.2:
             y_wp = 0

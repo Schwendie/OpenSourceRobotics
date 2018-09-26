@@ -26,8 +26,6 @@ class Vehicle:
         self.y = y
         self.theta = theta
 
-        self.plot(self.goal, (-1,21), (-10,10))
-
     def transformation_matrix(self):
         return np.array(
             [[cos(self.theta), -sin(self.theta), self.x],
@@ -58,7 +56,10 @@ class Vehicle:
         plt.plot([p2_r[0], p3_r[0]], [p2_r[1], p3_r[1]], 'k-')
         plt.plot([p3_r[0], p1_r[0]], [p3_r[1], p1_r[1]], 'k-')
 
-        plt.plot(self.goal[0], self.goal[1], c='g', marker='*')
+        if goal == []:
+            plt.plot(self.goal[0], self.goal[1], c='g', marker='*')
+        else:
+            plt.plot(goal[0], goal[1], c='g', marker='*')
 
         for obs in self.obstacles:
             circle = plt.Circle((obs[0], obs[1]), radius=0.5*obs[2], fc='r')

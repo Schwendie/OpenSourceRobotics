@@ -6,7 +6,7 @@ plt.ion()
 
 obstacle_prob = 0.2
 m, n = 25, 25
-start_node = (0, 0)
+start_node = (15, 15)
 goal_node = (m-1, n-1)
 distance = 0
 
@@ -26,6 +26,7 @@ distance_map[start_node] = 0
 distance = 0
 
 while True:
+    input()
     grid[start_node] = 5
     grid[goal_node] = 4
 

@@ -82,13 +82,19 @@ class Vehicle:
 
 class NLinkArm:
 
+    end_eff = (0,0)
+
     def __init__(self, link_lengths, joint_angles):
         if (len(link_lengths) != len(joint_angles)):
             print("The lengths of the two lists don't match")
         self.length = link_lengths
         self.thetas = joint_angles
 
-        self.goal = [0, 0]
+        self.points = []
+
+        self.update_points()
+
+        self.goal = self.end_eff
 
         fig = plt.figure()
         fig.canvas.mpl_connect('button_press_event', self.click)
@@ -101,13 +107,36 @@ class NLinkArm:
         self.update_points()
 
     def update_points(self):
-        points = []
-        p_x0 = self.length[0]*cos(self.thetas[0])
-        p_y0 = self.length[1]*sin(self.thetas[1])
-        points.append((p_x0, p_y0))
+        self.points = []
+        self.points.append((0, 0))
 
-        for i in range(1, len(self.thetas)):
-            p_x = x_points[i-1] + self.length[i] * cos(sum(self.thetas[:i+1]))
-            p_y = y_points[i-1] + self.length[i] * cos(sum(self.thetas[:i+1]))
-            points.append((p_x, p_y))
+        n = len(self.thetas)
+
+        for i in range(1, n):
+            p_x = self.points[i-1][0] + self.length[i] * cos(sum(self.thetas[:i+1]))
+            print(p_x)
+            p_y = self.points[i-1][1] + self.length[i] * cos(sum(self.thetas[:i+1]))
+            self.points.append((p_x, p_y))
+
+        self.end_eff = (self.points[n-1])
+
+    def plot(self, obstacles=[], goal=[], xlims=(-10,10), ylims=(-10,10)):
+        for point in self.points:
+            plt.plot(point[0], point[1], c='b', marker='o')
+
+        if goal == []:
+            plt.plot(self.goal[0], self.goal[1], c='g', marker='*')
+        else:
+            plt.plot(goal[0], goal[1], c='g', marker='*')
+
+        for obs in obstacles:
+            circle = plt.Circle((obs[0], obs[1]), radius=0.5*obs[2], fc='r')
+            plt.gca().add_patch(circle)
+
+        plt.xlim(xlims)
+        plt.ylim(ylims)
+
+        plt.show()
+        plt.pause(0.001)
+
 

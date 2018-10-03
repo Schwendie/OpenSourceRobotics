@@ -105,6 +105,8 @@ class NLinkArm:
 
     def click(self, event):
         self.goal = [event.xdata, event.ydata]
+        plt.cla()
+        self.plot()
 
     def update_joints(self, thetas):
         self.thetas = thetas

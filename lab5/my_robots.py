@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from math import cos, sin, sqrt, pi, atan2, isclose
+from math import cos, sin, sqrt, pi, atan2, isclose, radians
 
 class Vehicle:
 
@@ -88,9 +88,13 @@ class NLinkArm:
         if (len(link_lengths) != len(joint_angles)):
             print("The lengths of the two lists don't match")
         self.length = link_lengths
+        for i in range(0, len(joint_angles)):
+            joint_angles[i] = radians(joint_angles[i])
         self.thetas = joint_angles
 
         self.points = []
+        self.x = []
+        self.y = []
 
         self.update_points()
 
@@ -109,21 +113,26 @@ class NLinkArm:
     def update_points(self):
         self.points = []
         self.points.append((0, 0))
+        self.x = []
+        self.x.append(0)
+        self.y = []
+        self.y.append(0)
 
         n = len(self.thetas)
 
-        for i in range(1, n):
-            p_x = self.points[i-1][0] + self.length[i] * cos(sum(self.thetas[:i+1]))
+        for i in range(0, n):
+            p_x = self.points[i][0] + self.length[i] * cos(sum(self.thetas[:i+1]))
             print(p_x)
-            p_y = self.points[i-1][1] + self.length[i] * cos(sum(self.thetas[:i+1]))
+            self.x.append(p_x)
+            p_y = self.points[i][1] + self.length[i] * sin(sum(self.thetas[:i+1]))
+            self.y.append(p_y)
             self.points.append((p_x, p_y))
 
-        self.end_eff = (self.points[n-1])
+        self.end_eff = (self.points[n])
 
     def plot(self, obstacles=[], goal=[], xlims=(-10,10), ylims=(-10,10)):
-        for point in self.points:
-            plt.plot(point[0], point[1], c='b', marker='o')
-
+        plt.plot(self.x, self.y, 'bo-')
+        
         if goal == []:
             plt.plot(self.goal[0], self.goal[1], c='g', marker='*')
         else:

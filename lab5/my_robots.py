@@ -84,12 +84,12 @@ class NLinkArm:
 
     end_eff = (0,0)
 
-    def __init__(self, link_lengths, joint_angles):
+    def __init__(self, link_lengths=[1,1], joint_angles=[0,0]):
         if (len(link_lengths) != len(joint_angles)):
             print("The lengths of the two lists don't match")
         self.length = link_lengths
-        for i in range(0, len(joint_angles)):
-            joint_angles[i] = radians(joint_angles[i])
+        """for i in range(0, len(joint_angles)):
+            joint_angles[i] = radians(joint_angles[i])"""
         self.thetas = joint_angles
 
         self.points = []
@@ -97,16 +97,19 @@ class NLinkArm:
         self.y = []
 
         self.update_points()
-
+        print(self.end_eff)
         self.goal = self.end_eff
+        print(self.goal)
 
+        plt.ion()
         fig = plt.figure()
         fig.canvas.mpl_connect('button_press_event', self.click)
 
     def click(self, event):
         self.goal = [event.xdata, event.ydata]
-        plt.cla()
-        self.plot()
+        print(self.goal)
+        """plt.cla()
+        self.plot()"""
 
     def update_joints(self, thetas):
         self.thetas = thetas
@@ -122,15 +125,18 @@ class NLinkArm:
 
         n = len(self.thetas)
 
+        rad = np.radians(self.thetas)
+
         for i in range(0, n):
-            p_x = self.points[i][0] + self.length[i] * cos(sum(self.thetas[:i+1]))
+            p_x = self.points[i][0] + self.length[i] * cos(sum(rad[:i+1]))
             print(p_x)
             self.x.append(p_x)
-            p_y = self.points[i][1] + self.length[i] * sin(sum(self.thetas[:i+1]))
+            p_y = self.points[i][1] + self.length[i] * sin(sum(rad[:i+1]))
             self.y.append(p_y)
             self.points.append((p_x, p_y))
 
         self.end_eff = (self.points[n])
+        print(self.end_eff)
 
     def plot(self, obstacles=[], goal=[], xlims=(-10,10), ylims=(-10,10)):
         plt.plot(self.x, self.y, 'bo-')

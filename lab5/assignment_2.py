@@ -2,11 +2,53 @@ from my_robots import NLinkArm
 import matplotlib.pyplot as plt
 from math import pi, cos, sin, sqrt, atan2, acos
 
-arm = NLinkArm([2,2], [15, 15])
+#plt.ion()
+
+arm = NLinkArm()
+dt = 0.01
+K_h = 30
+theta1, theta2 = 0, 0
+theta_goal1, theta_goal2 = 0, 0
+l1 = arm.length[0]
+l2 = arm.length[1]
 
 def ang_diff(theta_goal, theta):
     return (theta_goal - theta + pi)%(2*pi) - pi
 
+while True:
+    x_g = arm.goal[0]
+    y_g = arm.goal[1]
+
+    print(x_g)
+    print(y_g)
+
+    print("I got here")
+
+    if (sqrt(x_g**2 + y_g**2) > (l1 + l2)):
+        d = sqrt(x_g**2 + y_g**2)
+        x_g = (x_g * 2) / d
+        y_g = (y_g * 2) / d
+    try:
+        theta_goal2 = acos((x_g**2 + y_g**2 - l1**2 - l2**2)/(2*l1*l2))
+        theta_goal1 = atan2(y_g, x_g) - atan2((l2*sin(theta_goal2)), (l1+l2*cos(theta_goal2)))
+    except:
+        theta_goal1 = 0
+        theta_goal2 = 0
+
+    if theta_goal1 < 0:
+        theta_goal2 *= -1
+        theta_goal1 = atan2(y_g, x_g) - atan2((l2*sin(theta_goal2)), (l1+l2*cos(theta_goal2)))
+
+    omega1 = K_h * ang_diff(theta_goal1, theta1)
+    omega2 = K_h * ang_diff(theta_goal2, theta2)
+
+    theta1 += omega1*dt
+    theta2 += omega2*dt
+
+    arm.update_joints([theta1, theta2])
+    arm.plot()
+
+"""
 # Pure pursuit end effector then update_points
 def pure_pursuit(x_wp, y_wp):
     zeros = lambda n: [0 for _ in range(n)]
@@ -40,9 +82,10 @@ def pure_pursuit(x_wp, y_wp):
         theta1 = atan2(y, x) - atan2((l2*sin(theta2)), (l1+l2*sin(theta2)))
 
         theta_list = [theta1, theta2]
+        print(theta_list)
         arm.update_joints(theta_list)
         #plt.cla()
         arm.plot()
 
-while True:
-    pure_pursuit(arm.goal[0], arm.goal[1])
+
+pure_pursuit(arm.goal[0], arm.goal[1])"""
